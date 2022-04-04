@@ -1,0 +1,12 @@
+Container_Ext(whySBA, "Why Service based architecture", "Service",
+ "1. Why not monolith. \n Ans. Hard to scale, Fault Tolerence, Low Agility \n 
+ 2. Why not Microservices? \n Ans. Complexity, Cost, Slow and complex to bring out MVP
+ 3. Why Service Based ???? \n Ans. Fault Tolrence, Services based is the cheapest highly scalable architecture, Less complex to bring out MVP, Can be easily migrated to Microservices")
+
+
+1) Configurable UI elements.
+2) Schedule a conference.
+3) Tag based invitation to speakers.
+4) Slot prefernce (Shift it to speaker)
+5) Finalize the conference (Curate recommendation, save, publish, branding to social media) --> user will get notified
+6) Branding the conference over social media

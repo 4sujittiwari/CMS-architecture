@@ -1,0 +1,39 @@
+@startuml crew_container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define DEVICONS2 https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
+!define MATERIAL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/material
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/angular.puml
+!include DEVICONS2/facebook.puml
+!include MATERIAL/notifications.puml
+!include FONTAWESOME/users.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(crew, "Crew")
+Container(adminPortal, "Admin Portal", "System")
+
+
+note left
+    Why Service based architecture
+   
+    1. Why not monolith. 
+    Ans. Hard to scale, Fault Tolerence, Low Agility
+
+    2. Why not Microservices? 
+    Ans. Complexity, Cost, Slow and complex to bring out MVP
+
+    3. Why Service Based ????
+    Ans. Ans. Fault Tolrence, Services based is the cheapest highly scalable architecture, Less complex to bring out MVP, Can be easily migrated to Microservices
+end note    
+
+
+System_Boundary(container, "Container") {
+Container(uiElements, "Configurable UI elements", "technology")
+}
+
+
+Rel(crew, adminPortal,"Uses","Portal")
+Rel(adminPortal, uiElements, "Provides","Way to configure UI Elements")

@@ -1,0 +1,49 @@
+@startuml context
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define DEVICONS2 https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
+!define MATERIAL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/material
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/angular.puml
+!include DEVICONS2/facebook.puml
+!include MATERIAL/notifications.puml
+!include FONTAWESOME/users.puml
+
+LAYOUT_WITH_LEGEND()
+
+
+System_Boundary(context, "Context") {
+node {
+Person(speaker, "Speaker", "Talk presenter")
+Container(speakerContainer, "Conference Management System", "Software System", "Manage talks, Present Talks, View Schedule, Upload Slides", $sprite="angular")
+}
+
+node {
+Person(crew, "Crew", "Event Manager")
+Container(crewContainer, "Conference Management System", "Software System", "Schedule/Manage conferences, Notify Speakers and Attendees, Manage conferences specific theme", $sprite="angular")
+}
+
+node {
+Person(attendee, "Attendee", "Conference Attendee", $sprite="users")
+Container(attendeeContainer, "Conference Management System", "Software System", "Sign upfor Talks,Cancel Sign up, Attend Session, Vote, View Schedule, View Slides, Download Slides", $sprite="angular")
+}
+}
+
+Container_Ext(crewExtContainer, "Social Network", "Software System", "For branding via Facebook, Instagram, Twitter etc", $sprite="facebook")
+Container(notification, "Notification System", "Software System", $sprite="notifications")
+
+
+
+
+
+
+
+Rel(speaker, speakerContainer, "Uses", "Speaker Portal")
+Rel(crew, crewContainer, "Uses", "Admin Portal")
+Rel(crewContainer, crewExtContainer, "Publish Upcoming conferences", "Uses API")
+Rel(attendee, attendeeContainer, "Uses", "Public Portal")
+Rel(crewContainer, notification, "Produces Event", "Notification Topic")
+Rel(notification, attendeeContainer, "Consumes Event", "Notification Topic")
+Rel(notification, speakerContainer, "Consumes Event", "Notification Topic")
+@enduml
