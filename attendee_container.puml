@@ -1,4 +1,4 @@
-@startuml crew_container
+@startuml attendee_container
 !include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
 
 
@@ -10,6 +10,7 @@
 !include <office/Servers/database_server>
 !include <office/Servers/file_server>
 !include <office/Servers/application_server>
+
 
 !define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
 !define DEVICONS2 https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
@@ -24,22 +25,8 @@
 
 LAYOUT_WITH_LEGEND()
 
-Person(crew, "Crew")
+Person(attendee, "Attendee")
 Container(portal, "Web Portal", "System")
-
-
-note left
-    Why Service based architecture
-
-    1. Why not monolith.
-    Ans. Hard to scale, Fault Tolerence, Low Agility
-
-    2. Why not Microservices?
-    Ans. Complexity, Cost, Slow and complex to bring out MVP
-
-    3. Why Service Based ????
-    Ans. Ans. Fault Tolrence, Services based is the cheapest highly scalable architecture, Less complex to bring out MVP, Can be easily migrated to Microservices
-end note
 
 AddContainerTag("webApp", $sprite="application_server", $legendText="web app container")
 AddContainerTag("db", $sprite="database_server", $legendText="database container")
@@ -47,7 +34,7 @@ AddContainerTag("files", $sprite="file_server", $legendText="file server contain
 
 
 System_Boundary(container, "Container") {
-    Container(webApplication, "Web application", "technology", "Front end for all the users", $tags="webApp")
+   Container(webApplication, "Web application", "technology", "Front end for all the users", $tags="webApp")
 
     Container(apiGateway, "API Gateway", "technology","To filter out the all the HTTP request")
 
@@ -61,24 +48,19 @@ System_Boundary(container, "Container") {
     System_Boundary(backendServices, "Backend Services") {
         Container(notificationService, "Notification Service", "technology", "General notification service to send all types of notification to users based on rules")
         Container(userManagementService, "User Management Service", "technology", "Manages users/speakers and there interest")
-        Container(configurationService , "Configuration Service", "technology", "Manage all type of configuration including configurable UI elements")
-        Container(schedulingService, "Scheduling Service", "technology", "Manage conference scheduling")
-        Container(contentService, "Content Service", "technology", "Manages conference content")
-        Container(brandingService, "Branding Service", "technology", "Manages social media branding related information")
+        Container(contentService, "Content Service", "technology", "Give access to deck")
+        Container(feedbackService, "Feedback Service", "technology", "Give feedback to crew/Sees Feedbacks from the attendees")
         Container(bookingService, "Booking Service", "technology", "Manage booking related information including conference")
-        Container(logisticsService, "Logistics Services", "technology", "Manages the conference related logistics")
-        Container(feedbackService, "Feedback Service", "technology", "Manages Feedbacks from the attendees/speakers")
-
     }
 
 }
 
-Container_Ext(socialNetwork, "Social Network", "Software System", "For branding via Facebook, Instagram, Twitter etc", $sprite="facebook")
 Container_Ext(notificationExt, "Notification System", "Software System", $sprite="notifications")
 Container_Ext(payment, "Payment Gateway", "technology", "To Handle booking payments", $sprite="payment")
 
 
-Rel(crew, portal,"Uses","Portal")
+
+Rel(attendee, portal,"Uses","Portal")
 Rel(portal, webApplication, "Provides","Way to configure UI Elements")
 Rel(webApplication, apiGateway, "Filters", "All HTTPS Request")
 Rel(apiGateway, identityManager, "Authroization", "Authorize the HTTP request")
@@ -88,7 +70,7 @@ Rel(backendServices, storage, "CRUD", "Read and Write files")
 
 Rel(backendServices, notificationExt, "Publish","Notifications")
 Rel(backendServices, payment, "Transaction","Manages booking payments")
-Rel(backendServices, socialNetwork, "Branding", "Publish conference information")
+
 
 
 @enduml
