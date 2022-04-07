@@ -1,0 +1,105 @@
+@startuml crew_container
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+
+
+!define osaPuml https://raw.githubusercontent.com/Crashedmind/PlantUML-opensecurityarchitecture2-icons/master
+!include osaPuml/Common.puml
+!include osaPuml/User/all.puml
+
+!include <office/Servers/database_server>
+!include <office/Servers/file_server>
+!include <office/Servers/application_server>
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define DEVICONS2 https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
+!define MATERIAL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/material
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/angular.puml
+!include DEVICONS2/facebook.puml
+!include MATERIAL/notifications.puml
+!include MATERIAL/perm_identity.puml
+!include MATERIAL/payment.puml
+!include FONTAWESOME/users.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(crew, "Crew") #red
+Person(speaker, "Speaker") #green
+Person(attendee, "Attendee") #brown
+Container(portal, "Web Portal", "System")
+
+
+note left
+    Why Service based architecture
+
+    1. Why not monolith.
+    Ans. Hard to scale, Fault Tolerence, Low Agility
+
+    2. Why not Microservices?
+    Ans. Complexity, Cost, Slow and complex to bring out MVP
+
+    3. Why Service Based ????
+    Ans. Ans. Fault Tolrence, Services based is the cheapest highly scalable architecture, Less complex to bring out MVP, Can be easily migrated to Microservices
+end note
+
+AddContainerTag("webApp", $sprite="application_server", $legendText="web app container")
+AddContainerTag("db", $sprite="database_server", $legendText="database container")
+AddContainerTag("files", $sprite="file_server", $legendText="file server container")
+
+
+System_Boundary(container, "Container") {
+    Container(webApplication, "Web application", "ReactJs/Angular", "Front end for all the users", $tags="webApp")
+
+    Container(apiGateway, "API Gateway", "Kong","To filter out the all the HTTP request")
+
+    Container(activeActiveAlb, "Active Active Load Balancer", "AWS Alb","Load Balancer for manage load between backend instances")
+
+    Container(activePassiveAlb, "Active Passive Load Balancer", "AWS Alb","Load Balancer for manage load between frontend instances")
+
+    Container(identityManager, "Identity Manager", "KeyClock", "User credentials and role", $sprite="perm_identity")
+
+    ContainerDb(database, "Database", "No-Sql Database","Database to persist", $tags="db")
+
+    Container(storage, "Cloud Storage", "S3","Storage for images/banner/ppt/archivals", $tags="files")
+
+
+    System_Boundary(backendServices, "Backend Services") {
+
+        Container(notificationService, "Notification Service", "Springboot Webflux (Reactive)", "General notification service to send all types of notification to users based on rules")
+        Container(userManagementService, "User Management Service", "Springboot Webflux (Reactive)", "Manages users/speakers and there interest")
+        Container(configurationService , "Configuration Service", "Springboot Webflux (Reactive)", "Manage all type of configuration including configurable UI elements") #red
+        Container(schedulingService, "Scheduling Service", "Springboot Webflux (Reactive)", "Manage conference scheduling")
+        Container(contentService, "Content Service", "Springboot Webflux (Reactive)", "Manages conference content")
+        Container(brandingService, "Branding Service", "Springboot Webflux (Reactive)", "Manages social media branding related information") #red
+        Container(bookingService, "Booking Service", "Springboot Webflux (Reactive)", "Manage booking related information including conference")
+        Container(logisticsService, "Logistics Services", "Springboot Webflux (Reactive)", "Manages the conference related logistics") #red
+        Container(feedbackService, "Feedback Service", "Springboot Webflux (Reactive)", "Manages Feedbacks from the attendees/speakers")
+
+    }
+
+}
+
+Container_Ext(socialNetwork, "Social Network", "Software System", "For branding via Facebook, Instagram, Twitter etc", $sprite="facebook")
+Container_Ext(notificationExt, "Notification System", "Software System", $sprite="notifications")
+Container_Ext(payment, "Payment Gateway", "technology", "To Handle booking payments", $sprite="payment") #saddleBrown
+
+
+Rel(crew, portal,"Uses","Portal")
+Rel(speaker, portal,"Uses","Portal")
+Rel(attendee, portal,"Uses","Portal")
+Rel(portal, activePassiveAlb, "Provides","Way to configure UI Elements")
+Rel(activePassiveAlb, webApplication, "Provides","Way to configure UI Elements")
+Rel(webApplication, apiGateway, "Filters", "All HTTPS Request")
+Rel(apiGateway, identityManager, "Authroization", "Authorize the HTTP request")
+Rel(apiGateway, activeActiveAlb, "Passes Request", "Passes the authroized request")
+Rel(activeActiveAlb, backendServices, "Passes Request", "Passes the authroized request")
+Rel(backendServices, database, "CRUD", "Read and Write data")
+Rel(backendServices, storage, "CRUD", "Read and Write files")
+
+Rel(backendServices, notificationExt, "Publish","Notifications from crew")
+Rel(backendServices, notificationExt, "Publish","Notifications from speaker")
+Rel(backendServices, payment, "Transaction","Manages booking payments")
+Rel(backendServices, socialNetwork, "Branding", "Publish conference information")
+
+@enduml

@@ -12,22 +12,11 @@
 
 LAYOUT_WITH_LEGEND()
 
-
 System_Boundary(context, "Context") {
-node {
-Person(speaker, "Speaker", "Talk presenter")
-Container(speakerContainer, "Conference Management System", "Software System", "Manage talks, Present Talks, View Schedule, Upload Slides", $sprite="angular")
-}
-
-node {
-Person(crew, "Crew", "Event Manager")
-Container(crewContainer, "Conference Management System", "Software System", "Schedule/Manage conferences, Notify Speakers and Attendees, Manage conferences specific theme", $sprite="angular")
-}
-
-node {
-Person(attendee, "Attendee", "Conference Attendee", $sprite="users")
-Container(attendeeContainer, "Conference Management System", "Software System", "Sign upfor Talks,Cancel Sign up, Attend Session, Vote, View Schedule, View Slides, Download Slides", $sprite="angular")
-}
+    Person(speaker, "Speaker", "Talk presenter") #green
+    Person(crew, "Crew", "Event Manager")  #red
+    Person(attendee, "Attendee", "Conference Attendee", $sprite="users") #brown
+    Container(container, "Conference Management System", "Software System", "Manage conference details", $sprite="angular")
 }
 
 Container_Ext(crewExtContainer, "Social Network", "Software System", "For branding via Facebook, Instagram, Twitter etc", $sprite="facebook")
@@ -36,11 +25,10 @@ Container_Ext(payment, "Payment Gateway", "technology", "To Handle booking payme
 
 
 
-Rel(speaker, speakerContainer, "Uses", "Speaker Portal")
-Rel(crew, crewContainer, "Uses", "Admin Portal")
-Rel(crewContainer, crewExtContainer, "Publish Upcoming conferences", "Uses API")
-Rel(attendee, attendeeContainer, "Uses", "Public Portal")
-Rel(attendeeContainer, payment, "Uses", "Public Portal")
-Rel(crewContainer, notification, "Produces Event", "Notification Topic")
-Rel(speakerContainer, notification, "Produces Event", "Notification Topic")
+Rel(speaker, container, "Uses", "Web Portal")
+Rel(crew, container, "Uses", "Web Portal")
+Rel(container, crewExtContainer, "Publish Upcoming conferences", "Uses API")
+Rel(attendee, container, "Uses", "Web Portal")
+Rel(container, payment, "Uses", "API for transaction")
+Rel(container, notification, "Sends notifications", "Notification Topic")
 @enduml

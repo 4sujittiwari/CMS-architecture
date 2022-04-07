@@ -1,0 +1,58 @@
+@startuml components
+!include https://raw.githubusercontent.com/plantuml-stdlib/C4-PlantUML/master/C4_Container.puml
+
+!define DEVICONS https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons
+!define DEVICONS2 https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/devicons2
+!define MATERIAL https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/material
+!define FONTAWESOME https://raw.githubusercontent.com/tupadr3/plantuml-icon-font-sprites/master/font-awesome-5
+!include DEVICONS/angular.puml
+!include DEVICONS2/facebook.puml
+!include MATERIAL/notifications.puml
+!include FONTAWESOME/users.puml
+
+LAYOUT_WITH_LEGEND()
+
+Person(speaker, "Speaker", "Talk presenter") #tan
+Person(crew, "Crew", "Event Manager")  #teal
+Person(attendee, "Attendee", "Conference Attendee", $sprite="users") #saddleBrown
+System_Boundary(container, "Conference Management System") {
+    Container(webApplication, "Web application", "ReactJs/Angular", "Front end for all the users", $tags="webApp")
+    System_Boundary(apiApplication, "API application") {
+        Container(notificationModule, "Notification Module", "Springboot Webflux (Reactive)", "General notification service to send all types of notification to users based on rules")
+        Container(userManagementModule, "User Management Module", "Springboot Webflux (Reactive)", "Manages users/speakers and there interest")
+        Container(configurationModule , "Configuration Module", "Springboot Webflux (Reactive)", "Manage all type of configuration including configurable UI elements") #teal
+        Container(contentModule, "Content Module", "Springboot Webflux (Reactive)", "Manages conference content")
+        Container(brandingModule, "Branding Module", "Springboot Webflux (Reactive)", "Manages social media branding related information") #teal
+        Container(bookingModule, "Booking Module", "Springboot Webflux (Reactive)", "Manage booking related information including conference")
+        Container(schedulingModule, "Logistics and Scheduling Module", "Springboot Webflux (Reactive)", "Manage conference scheduling along with logistics") #teal
+        Container(feedbackModule, "Feedback Module", "Springboot Webflux (Reactive)", "Manages Feedbacks from the attendees/speakers")
+    }
+    ContainerDb(database, "Database", "No-Sql Database","Database to persist", $tags="db")
+    Container(storage, "Cloud Storage", "S3","Storage for images/banner/ppt/archivals", $tags="files")
+}
+
+Container_Ext(socialNetwork, "Social Network", "Software System", "For branding via Facebook, Instagram, Twitter etc", $sprite="facebook")
+Container_Ext(notification, "Notification System", "Software System", $sprite="notifications")
+Container_Ext(payment, "Payment Gateway", "technology", "To Handle booking payments", $sprite="payment")
+
+Rel(speaker, webApplication, "Uses", "Web Portal")
+Rel(crew, webApplication, "Uses", "Web Portal")
+Rel(attendee, webApplication, "Uses", "Web Portal")
+Rel(bookingModule, payment, "Uses", "API for transaction")
+Rel(webApplication, apiApplication, "Make API calls", "HTTPS/JSON")
+Rel(contentModule, storage, "Fetch files", "REST Call")
+
+Rel(notificationModule, userManagementModule, "Manage user data needed for notification", "method call")
+Rel(bookingModule, userManagementModule, "Manage user data needed for booking", "method call")
+Rel(userManagementModule, database, "Manage users data", "SQL")
+Rel(contentModule, database, "Manage content path location", "SQL")
+Rel(schedulingModule, database, "Manage scheduling related information", "SQL")
+Rel(configurationModule, contentModule, "Manage configuration related information", "method call")
+Rel(feedbackModule, userManagementModule, "Fetch user data", "method call")
+Rel(feedbackModule, database, "Manages Feedbacks from the attendees/speakers", "method call")
+Rel(brandingModule, configurationModule, "Fetch current visual configuration", "method call")
+Rel(brandingModule, socialNetwork, "Publish Upcoming conferences", "API call")
+Rel(brandingModule, notificationModule, "Publish Upcoming conferences", "API call")
+Rel(notificationModule, notification, "Publish Upcoming conferences", "API call")
+
+@enduml
