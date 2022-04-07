@@ -1,5 +1,5 @@
 Container_Ext(whySBA, "Why Service based architecture", "Service",
- "1. Why not monolith. \n Ans. Hard to scale, Fault Tolerence, Low Agility \n 
+ "1. Why not monolith. \n Ans. Hard to scale, Fault Tolerence, Low Agility \n
  2. Why not Microservices? \n Ans. Complexity, Cost, Slow and complex to bring out MVP
  3. Why Service Based ???? \n Ans. Fault Tolrence, Services based is the cheapest highly scalable architecture, Less complex to bring out MVP, Can be easily migrated to Microservices")
 
@@ -39,3 +39,9 @@ Attendees
 8. Cancel seat(s) and get refund if applicable
 9. Once enter the conference will get a catalog with schedule
 10. At the end of the day I will get feedback notification (can be email)
+
+Future
+1. Depends on load think about migrate to micro-service (maybe with event driven)
+2. If we want to virtual, we can make use of zoom/teams or similar tech
+3. We can also have subscription based thing for recorded sessions
+4.

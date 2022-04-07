@@ -31,11 +31,8 @@ Container(attendeeContainer, "Conference Management System", "Software System", 
 }
 
 Container_Ext(crewExtContainer, "Social Network", "Software System", "For branding via Facebook, Instagram, Twitter etc", $sprite="facebook")
-Container(notification, "Notification System", "Software System", $sprite="notifications")
-
-
-
-
+Container_Ext(notification, "Notification System", "Software System", $sprite="notifications")
+Container_Ext(payment, "Payment Gateway", "technology", "To Handle booking payments", $sprite="payment")
 
 
 
@@ -43,7 +40,7 @@ Rel(speaker, speakerContainer, "Uses", "Speaker Portal")
 Rel(crew, crewContainer, "Uses", "Admin Portal")
 Rel(crewContainer, crewExtContainer, "Publish Upcoming conferences", "Uses API")
 Rel(attendee, attendeeContainer, "Uses", "Public Portal")
+Rel(attendeeContainer, payment, "Uses", "Public Portal")
 Rel(crewContainer, notification, "Produces Event", "Notification Topic")
-Rel(notification, attendeeContainer, "Consumes Event", "Notification Topic")
-Rel(notification, speakerContainer, "Consumes Event", "Notification Topic")
+Rel(speakerContainer, notification, "Produces Event", "Notification Topic")
 @enduml
